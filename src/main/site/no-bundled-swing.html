@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>JFC/Swing Applet Example</title>
+	</head>
+	<body
+		onResize = "resize()"
+		onLoad = "resize()"
+		topmargin = "0"
+		leftmargin = "0"
+		marginwidth = "0"
+		marginheight = "0"
+		style = "margin: 0px; border-width: 0px; padding: 0px; top: 0px; left: 0px; overflow: hidden;">
+		<script langiage = "JavaScript" type = "text/javascript">
+			function resize() {
+				var attributes = {
+					width: window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
+					height: window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+				};
+
+				var applet = document.applet0;
+				if (!document.layers) {
+					/*
+					 * Netscape 4 complains about this regardles of the JVM used.
+					 *
+					 * Sun JVM:
+					 * "applet has no properties."
+					 *
+					 * Netscapei 1.1 JVM:
+					 * "can't access field width."
+					 * "can't set Java field width."
+					 */
+					applet.width = attributes.width;
+					applet.height = attributes.height;
+				}
+				if (applet.setSize) {
+					/*
+					 * MSIE 8 with MS 1.1 JVM complains about this.
+					 */
+					applet.setSize(attributes.width, attributes.height);
+				}
+				window.scroll(0,0);
+			}
+			window.onResize = resize;
+			window.onLoad = resize;
+		</script>
+		<applet
+			name = "applet0"
+			codebase = "."
+			code = "com.example.Main"
+			archive = "swing-applet-0.0.1-SNAPSHOT.jar"
+			width = "100%"
+			height = "100%">Your browser doesn't understand the &lt;applet&gt; tag.</applet>
+	</body>
+</html>

@@ -1,0 +1,6 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+*.java		diff text
+.project	diff text
+.classpath	diff text
