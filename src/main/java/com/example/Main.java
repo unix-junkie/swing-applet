@@ -21,6 +21,9 @@ import javax.swing.JViewport;
 import javax.swing.WindowConstants;
 import javax.swing.table.AbstractTableModel;
 
+import com.example.backport.java.util.Arrays;
+import com.example.backport.java.util.Comparator;
+
 /**
  * @author Andrew ``Bass'' Shcheglov (mailto:andrewbass@gmail.com)
  */
@@ -60,7 +63,30 @@ public final class Main extends JApplet {
 				keys[i++] = (String) it.nextElement();
 			}
 		}
-		sort(keys);
+		Arrays.sort(keys, new Comparator() {
+			/**
+			 * @see Comparator#compare(Object, Object)
+			 */
+			public int compare(final Object o1, final Object o2) {
+				final String left = (String) o1;
+				final String right = (String) o2;
+
+				final int len1 = left.length();
+				final int len2 = right.length();
+				int n = Math.min(len1, len2);
+				int i = 0;
+				int j = 0;
+
+				while (n-- != 0) {
+				    final char c1 = left.charAt(i++);
+				    final char c2 = right.charAt(j++);
+				    if (c1 != c2) {
+					return c1 - c2;
+				    }
+				}
+				return len1 - len2;
+			}
+		});
 		return keys;
 	}
 
@@ -139,70 +165,5 @@ public final class Main extends JApplet {
 
 		frame.pack();
 		frame.setVisible(true);
-	}
-
-	private static void swap(final String x[], final int a, final int b) {
-		final String t = x[a];
-		x[a] = x[b];
-		x[b] = t;
-	}
-
-	private static void sort(final String[] a) {
-		final String aux[] = (String[]) a.clone();
-		mergeSort(aux, a, 0, a.length);
-	}
-
-	private static void mergeSort(final String src[], final String dest[], final int low, final int high) {
-		final int length = high - low;
-
-		// Insertion sort on smallest arrays
-		if (length < 7) {
-			for (int i = low; i < high; i++) {
-				for (int j = i; j > low && compare(dest[j - 1], dest[j]) > 0; j--) {
-					swap(dest, j, j - 1);
-				}
-			}
-			return;
-		}
-
-		// Recursively sort halves of dest into src
-		final int mid = (low + high) / 2;
-		mergeSort(dest, src, low, mid);
-		mergeSort(dest, src, mid, high);
-
-		// If list is already sorted, just copy from src to dest. This
-		// is an
-		// optimization that results in faster sorts for nearly ordered
-		// lists.
-		if (compare(src[mid - 1], src[mid]) <= 0) {
-			System.arraycopy(src, low, dest, low, length);
-			return;
-		}
-
-		// Merge sorted halves (now in src) into dest
-		for (int i = low, p = low, q = mid; i < high; i++) {
-			if (q >= high || p < mid && compare(src[p], src[q]) <= 0) {
-				dest[i] = src[p++];
-			} else {
-				dest[i] = src[q++];
-			}
-		}
-	}
-
-	private static int compare(final String left, final String right) {
-		final int len1 = left.length();
-		final int len2 = right.length();
-		int n = Math.min(len1, len2);
-		int i = 0;
-		int j = 0;
-
-		while (n-- != 0) {
-		    final char c1 = left.charAt(i++);
-		    final char c2 = right.charAt(j++);
-		    if (c1 != c2) {
-			return c1 - c2;
-		    }
-		}
-		return len1 - len2;
 	}
 }
